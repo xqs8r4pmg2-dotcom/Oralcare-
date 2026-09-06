@@ -109,7 +109,13 @@ const WA_NUM = "819000000000";
 </div>
 
 <script>
-const SYSTEM = `Voce e a Sofia, assistente virtual da OralCare — clinica odontologica no Japao com atendimento em portugues para a comunidade brasileira.
+function getDateContext(){
+  const d = new Date();
+  const weekday = d.toLocaleDateString('pt-BR',{weekday:'long'});
+  const full = d.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
+  return `DATA DE HOJE: ${weekday}, ${full}\nUse esta data como referencia exata para calcular corretamente qualquer dia da semana mencionado pelo cliente (hoje, amanha, "sabado que vem", datas especificas, etc). NUNCA adivinhe ou calcule o dia da semana de cabeca — baseie-se sempre nesta data de hoje informada aqui.\n\n`;
+}
+const SYSTEM = getDateContext() + `Voce e a Sofia, assistente virtual da OralCare — clinica odontologica no Japao com atendimento em portugues para a comunidade brasileira.
 Tom: acolhedor, calmo, empatico e profissional. Emojis com moderacao.
 
 SISTEMA DE SAUDE NO JAPAO:
@@ -130,9 +136,15 @@ HORARIOS: Seg a Sex 9h-19h | Sab 9h-14h
 PAGAMENTOS: transferencia bancaria japonesa, cartao, Pix
 IMPORTANTE: Nunca diagnostique. Para dor, oriente a agendar com urgencia.
 
-AGENDAMENTO: colete nome, tratamento desejado, tipo de seguro (ou particular), dia e horario. Confirme e diga que equipe entrara em contato via LINE ou WhatsApp.
+AGENDAMENTO: colete nome, tratamento desejado, tipo de seguro (ou particular), profissional preferido (ou "qualquer"), dia (calcule a data exata no formato AAAA-MM-DD usando a DATA DE HOJE informada acima) e horario (HH:MM). Repita e confirme todos os detalhes verbalmente com o paciente ANTES de chamar a ferramenta.
 
-ESCALADA: quando paciente quiser agendar ou tiver urgencia, diga: "Vou acionar nossa equipe agora! Um momento que ja entram em contato para confirmar seu horario."
+Quando o paciente confirmar, use a ferramenta reservar_horario com os dados coletados.
+
+Se a ferramenta retornar sucesso=true: diga "Vou acionar nossa equipe agora! Um momento que ja entram em contato para confirmar seu horario." e informe qual profissional foi confirmado.
+
+Se a ferramenta retornar sucesso=false com alternativas: peca desculpas educadamente, explique que esse horario acabou de ser reservado por outro paciente, e apresente as alternativas retornadas de forma clara. Pergunte qual o paciente prefere e chame a ferramenta novamente com a escolha.
+
+NUNCA diga que um agendamento esta confirmado sem antes ter chamado a ferramenta reservar_horario e recebido sucesso=true. Isso e obrigatorio.
 
 Responda em portugues brasileiro. Seja acolhedora e clara.`;
 
@@ -149,22 +161,22 @@ function init(){
   document.getElementById('wa').href=`https://wa.me/${WA_NUM}`;
 }
 function now(){return new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}
-function show(id){const el=document.getElementById(id);if(el){el.classList.add('on');scroll()}}
-function scroll(){const a=document.getElementById('anc');if(a)setTimeout(()=>a.scrollIntoView({behavior:'smooth',block:'end'}),50)}
+function show(id){const el=document.getElementById(id);if(!el)return;requestAnimationFrame(()=>requestAnimationFrame(()=>{el.classList.add('on');scroll()}))}
+function scroll(){const a=document.getElementById('anc');if(a)a.scrollIntoView({behavior:'auto',block:'end'})}
 function addMsg(role,text){
   msgCount++;const id='m'+msgCount;const c=document.getElementById('msgs');const anc=document.getElementById('anc');
   const row=document.createElement('div');row.id=id;row.className='mr'+(role==='u'?' u':'');
   const t=now();const html=text.replace(/\n/g,'<br>');
   if(role==='b'){row.innerHTML=`<div class="ma">🦷</div><div><div class="bb b">${html}</div><div class="mt">${t}</div></div>`}
   else{row.innerHTML=`<div><div class="bb u">${html}</div><div class="mt r">${t} ✓✓</div></div>`}
-  c.insertBefore(row,anc);setTimeout(()=>show(id),30);
+  c.insertBefore(row,anc);show(id);
 }
 async function send(text){
   const inp=document.getElementById('inp');const msg=text||inp.value.trim();if(!msg)return;
   document.getElementById('qr').style.display='none';addMsg('u',msg);inp.value='';inp.style.height='auto';upd();
   hist.push({role:'user',content:msg});document.getElementById('tp').classList.add('on');scroll();
   try{
-    const res=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-5',max_tokens:1000,system:SYSTEM,messages:hist.slice(-12)})});
+    const res=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-5',max_tokens:1000,system:SYSTEM,messages:hist.slice(-12),business:'oralcare'})});
     document.getElementById('tp').classList.remove('on');
     const raw=await res.text();let reply='';let apiErrMsg='';
     try{const data=JSON.parse(raw);if(data.error){apiErrMsg=data.error.message||JSON.stringify(data.error);throw new Error(apiErrMsg)}reply=(data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('').trim()}
