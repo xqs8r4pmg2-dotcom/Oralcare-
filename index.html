@@ -4,8 +4,6 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
 <title>OralCare • Atendimento Online</title>
-<link rel="apple-touch-icon" sizes="180x180" href="icone-ferramentas.png">
-<link rel="icon" type="image/png" href="icone-ferramentas.png">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{--acc:#0EA5A0;--acc2:#0d7a76;--bg:#fff;--bg2:#fcfffe;--bg3:#f0fafa;--border:#d0eeec;--text:#1a3a38;--muted:#5a8a86;--green:#4ade80}
@@ -85,8 +83,7 @@ const WA_NUM = "819000000000";
       <div class="bb b">Olá! Seja bem-vindo à OralCare! Sou a Sofia.<br><br>Clínica odontológica no Japão com atendimento em português. Aceitamos Kokumin Kenko Hoken e Shakai Hoken. Como posso te ajudar hoje?</div>
       <div class="mt" id="t0"></div>
     </div>
-  </div>
-  <div class="tp" id="tp"><div class="ma">🦷</div><div class="tb"><div class="d"></div><div class="d"></div><div class="d"></div></div></div>
+  </div><div class="tb"><div class="d"></div><div class="d"></div><div class="d"></div></div></div>
   <div class="esc" id="esc"><div class="ed"></div><div class="et"><strong>Equipe notificada</strong><span>Entraremos em contato via LINE ou WhatsApp</span></div></div>
   <div id="anc"></div>
 </div>
@@ -173,20 +170,34 @@ function addMsg(role,text){
   else{row.innerHTML=`<div><div class="bb u">${html}</div><div class="mt r">${t} ✓✓</div></div>`}
   c.insertBefore(row,anc);show(id);
 }
+function showTyping(){
+  const c=document.getElementById('msgs');
+  const anc=document.getElementById('anc');
+  const el=document.createElement('div');
+  el.className='tp on';
+  el.id='tp-dynamic';
+  el.innerHTML='<div class="ma">🦷</div><div class="tb"><div class="d"></div><div class="d"></div><div class="d"></div></div>';
+  c.insertBefore(el,anc);
+  scroll();
+}
+function hideTyping(){
+  const el=document.getElementById('tp-dynamic');
+  if(el) el.remove();
+}
 async function send(text){
   const inp=document.getElementById('inp');const msg=text||inp.value.trim();if(!msg)return;
   document.getElementById('qr').style.display='none';addMsg('u',msg);inp.value='';inp.style.height='auto';upd();
-  hist.push({role:'user',content:msg});document.getElementById('tp').classList.add('on');scroll();
+  hist.push({role:'user',content:msg});showTyping();scroll();
   try{
     const res=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-5',max_tokens:1000,system:SYSTEM,messages:hist.slice(-12),business:'oralcare'})});
-    document.getElementById('tp').classList.remove('on');
+    hideTyping();
     const raw=await res.text();let reply='';let apiErrMsg='';
     try{const data=JSON.parse(raw);if(data.error){apiErrMsg=data.error.message||JSON.stringify(data.error);throw new Error(apiErrMsg)}reply=(data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('').trim()}
     catch(e){if(!apiErrMsg){const m=raw.match(/"text":"((?:[^"\\]|\\.)*)"/);if(m)reply=m[1].replace(/\\n/g,'\n').replace(/\\"/g,'"')}}
     if(!reply)reply=apiErrMsg?('⚠️ Erro da API: '+apiErrMsg):'Desculpe, tive um problema. Tenta de novo!';
     hist.push({role:'assistant',content:reply});addMsg('b',reply);
     if(!esc&&(reply.includes('equipe agora')||reply.includes('entram em contato'))){esc=true;setTimeout(()=>document.getElementById('esc').classList.add('on'),400);scroll()}
-  }catch(e){document.getElementById('tp').classList.remove('on');addMsg('b','Ops! Problema tecnico. Tenta de novo em instantes!')}
+  }catch(e){hideTyping();addMsg('b','Ops! Problema tecnico. Tenta de novo em instantes!')}
 }
 function resize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,100)+'px'}
 function upd(){const v=document.getElementById('inp').value.trim();document.getElementById('snd').className=v?'on':''}
