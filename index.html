@@ -15,6 +15,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .av::after{content:'';position:absolute;bottom:1px;right:1px;width:11px;height:11px;border-radius:50%;background:#a3e635;border:2px solid var(--acc2)}
 .hinfo{flex:1}.hname{color:#fff;font-weight:800;font-size:16px}.hsub{color:rgba(255,255,255,.8);font-size:11px;margin-top:2px;font-weight:500}
 .hbadge{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:20px;padding:4px 10px;font-size:10px;color:#a3e635;font-weight:700}
+.langsw{display:flex;gap:6px;margin-top:10px}
+.lgb{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.22);border-radius:8px;padding:4px 9px;font-size:15px;cursor:pointer;opacity:.5;transition:all .15s;line-height:1}
+.lgb.active{opacity:1;background:rgba(255,255,255,.24);border-color:rgba(255,255,255,.55)}
 .ins{display:flex;gap:6px;margin-top:10px}
 .ic{flex:1;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:10px;padding:7px 8px;cursor:pointer}
 .ic .it{color:#fff;font-size:10px;font-weight:700}.ic .is{color:rgba(255,255,255,.7);font-size:8px;margin-top:1px}
@@ -33,7 +36,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .bb.b{background:var(--bg3);border:1px solid var(--border);color:var(--text);border-bottom-left-radius:3px}
 .bb.u{background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;font-weight:600;border-bottom-right-radius:3px}
 .mt{font-size:9px;color:#b0d8d4;margin-top:3px;padding:0 4px}.mt.r{text-align:right}
-.tp{display:none;align-items:flex-end;gap:7px}.tp.on{display:flex}
+.tp{display:flex;align-items:flex-end;gap:7px}
 .tb{background:var(--bg3);border:1px solid var(--border);border-radius:16px 16px 16px 3px;padding:11px 14px;display:flex;gap:5px;align-items:center}
 .d{width:7px;height:7px;border-radius:50%;background:var(--acc);opacity:.4;animation:bn 1.2s ease-in-out infinite}
 .d:nth-child(2){animation-delay:.2s}.d:nth-child(3){animation-delay:.4s}
@@ -58,7 +61,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <body>
 <script>
 const WORKER = "https://agente-proxy.wnwkv4g7hw.workers.dev";
-const WA_NUM = "819000000000";
 </script>
 
 <div class="hd">
@@ -67,11 +69,12 @@ const WA_NUM = "819000000000";
     <div class="hinfo"><div class="hname">OralCare</div><div class="hsub">Sofia • Assistente Virtual</div></div>
     <div class="hbadge">🟢 Online</div>
   </div>
-  <div class="ins">
-    <div class="ic" onclick="send('Tenho seguro nacional da prefeitura, o que cobre?')"><div class="it">🏥 Kokumin Hoken</div><div class="is">Prefeitura</div></div>
-    <div class="ic" onclick="send('Tenho seguro social do emprego, o que cobre?')"><div class="it">🏢 Shakai Hoken</div><div class="is">Emprego</div></div>
-    <div class="ic" onclick="send('Quero tratamento particular')"><div class="it">💴 Particular</div><div class="is">Estética</div></div>
+  <div class="langsw" id="langsw">
+    <button class="lgb" data-lang="pt" onclick="switchLang('pt')">🇧🇷</button>
+    <button class="lgb" data-lang="ja" onclick="switchLang('ja')">🇯🇵</button>
+    <button class="lgb" data-lang="en" onclick="switchLang('en')">🇬🇧</button>
   </div>
+  <div class="ins"></div>
   <div class="svcs" id="svcs"></div>
 </div>
 
@@ -102,19 +105,163 @@ const WA_NUM = "819000000000";
   </div>
   <a class="wa" id="wa" href="#" target="_blank" rel="noopener">
     <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-    Falar com atendente no WhatsApp
+    <span id="waText">Falar com atendente no WhatsApp</span>
   </a>
   <div class="foot">OralCare • Powered by Claude AI</div>
 </div>
 
 <script>
+const I18N = {
+  pt: {
+    greeting: "Olá! Seja bem-vindo à OralCare! Sou a Sofia.<br><br>Clínica odontológica no Japão com atendimento em português. Aceitamos Kokumin Kenko Hoken e Shakai Hoken. Como posso te ajudar hoje?",
+    quick: [
+      {msg:"Quero agendar uma consulta",label:"📅 Agendar consulta"},
+      {msg:"Quanto custa a limpeza com seguro?",label:"✨ Limpeza c/ seguro"},
+      {msg:"Quanto custa o clareamento?",label:"😁 Clareamento"},
+      {msg:"Quero saber sobre aparelho invisivel",label:"🦷 Aparelho"}
+    ],
+    placeholder: "Digite sua mensagem...",
+    wa: "Falar com atendente no WhatsApp",
+    esc_title: "Equipe notificada",
+    esc_sub: "Entraremos em contato via LINE ou WhatsApp",
+    lang_instr: "Responda SEMPRE em portugues brasileiro, independente do idioma usado pelo cliente.",
+    locale: "pt-BR",
+    svcQ: "Quero saber sobre {n}",
+    svcs: [
+      {i:"🔍",n:"Consulta",p:"~¥1.500",c:true},
+      {i:"✨",n:"Limpeza",p:"~¥3.000",c:true},
+      {i:"😁",n:"Clareamento",p:"¥50.000+",c:false},
+      {i:"💎",n:"Facetas",p:"¥25.000+",c:false},
+      {i:"🔧",n:"Aparelho",p:"¥400.000+",c:false},
+      {i:"🏆",n:"Implante",p:"¥300.000+",c:false}
+    ],
+    ins: [
+      {i:"🏥",t:"Kokumin Hoken",s:"Prefeitura",q:"Tenho seguro nacional da prefeitura, o que cobre?"},
+      {i:"🏢",t:"Shakai Hoken",s:"Emprego",q:"Tenho seguro social do emprego, o que cobre?"},
+      {i:"💴",t:"Particular",s:"Estética",q:"Quero tratamento particular"}
+    ]
+  },
+  ja: {
+    greeting: "こんにちは！OralCareへようこそ！アシスタントのSofiaです。<br><br>日本にあるポルトガル語対応の歯科クリニックです。国民健康保険・社会保険に対応しております。本日はどのようなご用件でしょうか？",
+    quick: [
+      {msg:"診察の予約をしたいです",label:"📅 予約する"},
+      {msg:"保険でのクリーニング料金は？",label:"✨ 保険適用クリーニング"},
+      {msg:"ホワイトニングの料金は？",label:"😁 ホワイトニング"},
+      {msg:"マウスピース矯正について知りたいです",label:"🦷 マウスピース矯正"}
+    ],
+    placeholder: "メッセージを入力してください...",
+    wa: "WhatsAppでスタッフに相談する",
+    esc_title: "スタッフに通知しました",
+    esc_sub: "LINEまたはWhatsAppでご連絡いたします",
+    lang_instr: "お客様が使用する言語に関わらず、必ず日本語で丁寧に返信してください。",
+    locale: "ja-JP",
+    svcQ: "{n}について知りたいです",
+    svcs: [
+      {i:"🔍",n:"診察",p:"~¥1.500",c:true},
+      {i:"✨",n:"クリーニング",p:"~¥3.000",c:true},
+      {i:"😁",n:"ホワイトニング",p:"¥50.000+",c:false},
+      {i:"💎",n:"ラミネートベニア",p:"¥25.000+",c:false},
+      {i:"🔧",n:"矯正装置",p:"¥400.000+",c:false},
+      {i:"🏆",n:"インプラント",p:"¥300.000+",c:false}
+    ],
+    ins: [
+      {i:"🏥",t:"国民健康保険",s:"市区町村",q:"国民健康保険に加入しています。何が保険適用になりますか？"},
+      {i:"🏢",t:"社会保険",s:"勤務先",q:"社会保険に加入しています。何が保険適用になりますか？"},
+      {i:"💴",t:"自費診療",s:"審美治療",q:"自費診療を希望します"}
+    ]
+  },
+  en: {
+    greeting: "Hello! Welcome to OralCare! I'm Sofia.<br><br>A dental clinic in Japan with Portuguese-speaking support. We accept Kokumin Kenko Hoken and Shakai Hoken. How can I help you today?",
+    quick: [
+      {msg:"I want to book an appointment",label:"📅 Book Appointment"},
+      {msg:"How much is cleaning with insurance?",label:"✨ Cleaning w/ Insurance"},
+      {msg:"How much is teeth whitening?",label:"😁 Whitening"},
+      {msg:"I want to know about invisible braces",label:"🦷 Invisible Braces"}
+    ],
+    placeholder: "Type your message...",
+    wa: "Talk to staff on WhatsApp",
+    esc_title: "Team notified",
+    esc_sub: "We'll contact you via LINE or WhatsApp shortly",
+    lang_instr: "ALWAYS reply in English, regardless of the language the customer uses.",
+    locale: "en-US",
+    svcQ: "I want to know about {n}",
+    svcs: [
+      {i:"🔍",n:"Consultation",p:"~¥1,500",c:true},
+      {i:"✨",n:"Cleaning",p:"~¥3,000",c:true},
+      {i:"😁",n:"Whitening",p:"¥50,000+",c:false},
+      {i:"💎",n:"Veneers",p:"¥25,000+",c:false},
+      {i:"🔧",n:"Braces",p:"¥400,000+",c:false},
+      {i:"🏆",n:"Implant",p:"¥300,000+",c:false}
+    ],
+    ins: [
+      {i:"🏥",t:"Kokumin Hoken",s:"Municipal",q:"I have municipal national health insurance, what does it cover?"},
+      {i:"🏢",t:"Shakai Hoken",s:"Employer",q:"I have employer-based social insurance, what does it cover?"},
+      {i:"💴",t:"Private",s:"Cosmetic",q:"I want a private (out-of-pocket) treatment"}
+    ]
+  }
+};
+let LANG = 'pt';
+
+function detectLang(){
+  const nav = (navigator.language||'pt').toLowerCase();
+  if(nav.startsWith('ja')) return 'ja';
+  if(nav.startsWith('en')) return 'en';
+  return 'pt';
+}
+
+function renderSvcs(){
+  const t = I18N[LANG];
+  const s = document.getElementById('svcs');
+  s.innerHTML = '';
+  t.svcs.forEach(sv=>{
+    const d = document.createElement('div');
+    d.className='sc';
+    d.innerHTML=`<div class="sn">${sv.i} ${sv.n}</div><div class="sp ${sv.c?'cov':'pri'}">${sv.c?'✓ ':''}${sv.p}</div>`;
+    d.onclick=()=>send(t.svcQ.replace('{n}', sv.n));
+    s.appendChild(d);
+  });
+}
+
+function renderIns(){
+  const t = I18N[LANG];
+  const box = document.querySelector('.ins');
+  box.innerHTML = '';
+  t.ins.forEach(iv=>{
+    const d = document.createElement('div');
+    d.className='ic';
+    d.innerHTML=`<div class="it">${iv.i} ${iv.t}</div><div class="is">${iv.s}</div>`;
+    d.onclick=()=>send(iv.q);
+    box.appendChild(d);
+  });
+}
+
+function applyLangUI(){
+  const t = I18N[LANG];
+  document.querySelectorAll('.lgb').forEach(b=>b.classList.toggle('active', b.dataset.lang===LANG));
+  document.getElementById('inp').placeholder = t.placeholder;
+  document.getElementById('waText').textContent = t.wa;
+  document.querySelector('#esc .et strong').textContent = t.esc_title;
+  document.querySelector('#esc .et span').textContent = t.esc_sub;
+  renderSvcs();
+  renderIns();
+  if(hist.length===0){
+    document.querySelector('#m0 .bb.b').innerHTML = t.greeting;
+    document.getElementById('qr').innerHTML = t.quick.map(q=>`<button class="qb" onclick="send('${q.msg.replace(/'/g,"\\'")}')">${q.label}</button>`).join('');
+    document.getElementById('dlbl').textContent = new Date().toLocaleDateString(t.locale,{weekday:'long',day:'2-digit',month:'long'}).toUpperCase();
+  }
+}
+
+function switchLang(l){ LANG = l; applyLangUI(); }
+
 function getDateContext(){
   const d = new Date();
-  const weekday = d.toLocaleDateString('pt-BR',{weekday:'long'});
-  const full = d.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
+  const loc = I18N[LANG].locale;
+  const weekday = d.toLocaleDateString(loc,{weekday:'long'});
+  const full = d.toLocaleDateString(loc,{day:'2-digit',month:'long',year:'numeric'});
   return `DATA DE HOJE: ${weekday}, ${full}\nUse esta data como referencia exata para calcular corretamente qualquer dia da semana mencionado pelo cliente (hoje, amanha, "sabado que vem", datas especificas, etc). NUNCA adivinhe ou calcule o dia da semana de cabeca — baseie-se sempre nesta data de hoje informada aqui.\n\n`;
 }
-const SYSTEM = getDateContext() + `Voce e a Sofia, assistente virtual da OralCare — clinica odontologica no Japao com atendimento em portugues para a comunidade brasileira.
+
+const BASE_SYSTEM = `Voce e a Sofia, assistente virtual da OralCare — clinica odontologica no Japao com atendimento para a comunidade brasileira.
 Tom: acolhedor, calmo, empatico e profissional. Emojis com moderacao.
 
 SISTEMA DE SAUDE NO JAPAO:
@@ -139,27 +286,37 @@ AGENDAMENTO: colete nome, tratamento desejado, tipo de seguro (ou particular), p
 
 Quando o paciente confirmar, use a ferramenta reservar_horario com os dados coletados.
 
-Se a ferramenta retornar sucesso=true: diga "Vou acionar nossa equipe agora! Um momento que ja entram em contato para confirmar seu horario." e informe qual profissional foi confirmado.
+Se a ferramenta retornar sucesso=true: confirme o agendamento de forma calorosa (no idioma da conversa), informe qual profissional foi confirmado, e avise que a equipe entrara em contato em breve via LINE ou WhatsApp. Termine OBRIGATORIAMENTE a mensagem com a marca exata [[HANDOFF]] no final (essa marca e um codigo interno, nunca a traduza, explique ou omita).
 
 Se a ferramenta retornar sucesso=false com alternativas: peca desculpas educadamente, explique que esse horario acabou de ser reservado por outro paciente, e apresente as alternativas retornadas de forma clara. Pergunte qual o paciente prefere e chame a ferramenta novamente com a escolha.
 
-NUNCA diga que um agendamento esta confirmado sem antes ter chamado a ferramenta reservar_horario e recebido sucesso=true. Isso e obrigatorio.
+NUNCA diga que um agendamento esta confirmado sem antes ter chamado a ferramenta reservar_horario e recebido sucesso=true. Isso e obrigatorio.`;
 
-Responda em portugues brasileiro. Seja acolhedora e clara.`;
-
-const SVCS=[{i:"🔍",n:"Consulta",p:"~¥1.500",c:true},{i:"✨",n:"Limpeza",p:"~¥3.000",c:true},{i:"😁",n:"Clareamento",p:"¥50.000+",c:false},{i:"💎",n:"Facetas",p:"¥25.000+",c:false},{i:"🔧",n:"Aparelho",p:"¥400.000+",c:false},{i:"🏆",n:"Implante",p:"¥300.000+",c:false}];
+function buildSystem(){
+  return getDateContext() + BASE_SYSTEM + '\n\n' + I18N[LANG].lang_instr + ' Seja acolhedora e clara.';
+}
 
 let hist=[],esc=false,msgCount=0;
 
+async function loadWaNumber(){
+  try{
+    const r = await fetch(`${WORKER}?config=oralcare`);
+    const d = await r.json();
+    if(d.wa) document.getElementById('wa').href = `https://wa.me/${d.wa}`;
+    else document.getElementById('wa').style.display = 'none';
+  }catch(e){
+    document.getElementById('wa').style.display = 'none';
+  }
+}
+
 function init(){
-  document.getElementById('dlbl').textContent=new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long'}).toUpperCase();
+  LANG = detectLang();
+  applyLangUI();
   document.getElementById('t0').textContent=now();
   setTimeout(()=>show('m0'),300);
-  const s=document.getElementById('svcs');
-  SVCS.forEach(sv=>{const d=document.createElement('div');d.className='sc';d.innerHTML=`<div class="sn">${sv.i} ${sv.n}</div><div class="sp ${sv.c?'cov':'pri'}">${sv.c?'✓ ':''}${sv.p}</div>`;d.onclick=()=>send(`Quero saber sobre ${sv.n}`);s.appendChild(d)});
-  document.getElementById('wa').href=`https://wa.me/${WA_NUM}`;
+  loadWaNumber();
 }
-function now(){return new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}
+function now(){return new Date().toLocaleTimeString(I18N[LANG].locale,{hour:'2-digit',minute:'2-digit'})}
 function show(id){const el=document.getElementById(id);if(!el)return;requestAnimationFrame(()=>requestAnimationFrame(()=>{el.classList.add('on');scroll()}))}
 function scroll(){const a=document.getElementById('anc');if(a)a.scrollIntoView({behavior:'auto',block:'end'})}
 function addMsg(role,text){
@@ -171,32 +328,27 @@ function addMsg(role,text){
   c.insertBefore(row,anc);show(id);
 }
 function showTyping(){
-  const c=document.getElementById('msgs');
-  const anc=document.getElementById('anc');
-  const el=document.createElement('div');
-  el.className='tp on';
-  el.id='tp-dynamic';
+  const c=document.getElementById('msgs');const anc=document.getElementById('anc');
+  const el=document.createElement('div');el.className='tp on';el.id='tp-dynamic';
   el.innerHTML='<div class="ma">🦷</div><div class="tb"><div class="d"></div><div class="d"></div><div class="d"></div></div>';
-  c.insertBefore(el,anc);
-  scroll();
+  c.insertBefore(el,anc);scroll();
 }
-function hideTyping(){
-  const el=document.getElementById('tp-dynamic');
-  if(el) el.remove();
-}
+function hideTyping(){const el=document.getElementById('tp-dynamic');if(el)el.remove();}
 async function send(text){
   const inp=document.getElementById('inp');const msg=text||inp.value.trim();if(!msg)return;
   document.getElementById('qr').style.display='none';addMsg('u',msg);inp.value='';inp.style.height='auto';upd();
   hist.push({role:'user',content:msg});showTyping();scroll();
   try{
-    const res=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-5',max_tokens:1000,system:SYSTEM,messages:hist.slice(-12),business:'oralcare'})});
+    const res=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-5',max_tokens:1000,system:buildSystem(),messages:hist.slice(-12),business:'oralcare'})});
     hideTyping();
     const raw=await res.text();let reply='';let apiErrMsg='';
     try{const data=JSON.parse(raw);if(data.error){apiErrMsg=data.error.message||JSON.stringify(data.error);throw new Error(apiErrMsg)}reply=(data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('').trim()}
     catch(e){if(!apiErrMsg){const m=raw.match(/"text":"((?:[^"\\]|\\.)*)"/);if(m)reply=m[1].replace(/\\n/g,'\n').replace(/\\"/g,'"')}}
     if(!reply)reply=apiErrMsg?('⚠️ Erro da API: '+apiErrMsg):'Desculpe, tive um problema. Tenta de novo!';
+    let handoff=false;
+    if(reply.includes('[[HANDOFF]]')){handoff=true;reply=reply.replace('[[HANDOFF]]','').trim();}
     hist.push({role:'assistant',content:reply});addMsg('b',reply);
-    if(!esc&&(reply.includes('equipe agora')||reply.includes('entram em contato'))){esc=true;setTimeout(()=>document.getElementById('esc').classList.add('on'),400);scroll()}
+    if(handoff&&!esc){esc=true;setTimeout(()=>document.getElementById('esc').classList.add('on'),400);scroll()}
   }catch(e){hideTyping();addMsg('b','Ops! Problema tecnico. Tenta de novo em instantes!')}
 }
 function resize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,100)+'px'}
