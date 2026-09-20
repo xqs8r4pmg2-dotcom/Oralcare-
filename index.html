@@ -298,11 +298,12 @@ function buildSystem(){
 
 let hist=[],esc=false,msgCount=0;
 
+let waNumber = null;
 async function loadWaNumber(){
   try{
     const r = await fetch(`${WORKER}?config=oralcare`);
     const d = await r.json();
-    if(d.wa) document.getElementById('wa').href = `https://wa.me/${d.wa}`;
+    if(d.wa){ waNumber = d.wa; document.getElementById('wa').href = `https://wa.me/${d.wa}`; }
     else document.getElementById('wa').style.display = 'none';
   }catch(e){
     document.getElementById('wa').style.display = 'none';
@@ -348,7 +349,7 @@ async function send(text){
     let handoff=false;
     if(reply.includes('[[HANDOFF]]')){handoff=true;reply=reply.replace('[[HANDOFF]]','').trim();}
     hist.push({role:'assistant',content:reply});addMsg('b',reply);
-    if(handoff&&!esc){esc=true;setTimeout(()=>document.getElementById('esc').classList.add('on'),400);scroll()}
+    if(handoff&&!esc){esc=true;if(waNumber){document.getElementById('wa').href=`https://wa.me/${waNumber}?text=${encodeURIComponent(reply)}`;}setTimeout(()=>document.getElementById('esc').classList.add('on'),400);scroll()}
   }catch(e){hideTyping();addMsg('b','Ops! Problema tecnico. Tenta de novo em instantes!')}
 }
 function resize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,100)+'px'}
